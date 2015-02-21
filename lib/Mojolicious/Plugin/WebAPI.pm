@@ -5,6 +5,7 @@ package Mojolicious::Plugin::WebAPI;
 use Mojo::Base 'Mojolicious::Plugin';
 
 use WebAPI::DBIC::WebApp;
+use WebAPI::DBIC::RouteMaker;
 use Mojolicious::Plugin::WebAPI::Proxy;
  
 our $VERSION = '0.01';
@@ -15,7 +16,15 @@ sub register {
     my $schema = delete $conf->{schema};
     my $route  = delete $conf->{route};
 
+    my %opts;
+    if ( $conf->{resource_opts} ) {
+        $opts{route_maker} = WebAPI::DBIC::RouteMaker->new(
+            %{ $conf->{resource_opts} },
+        );
+    }
+
     my $psgi_app = WebAPI::DBIC::WebApp->new({
+        %opts,
         schema => $schema,
     })->to_psgi_app;
 
@@ -60,11 +69,37 @@ __END__
   });
 
 
+  # disable http basic auth
+  $self->plugin('WebAPI' => {
+    schema => $schema,
+    route  => $route,
+
+    resource_opts => {
+      resource_default_args => {
+        http_auth_type => 'none',
+      },
+    },
+  });
+
+
 =head1 DESCRIPTION
 
 This is just the glue to mount the webapi into your application. The
 hard work is done by L<WebAPI::DBIC>. The code for C<Proxy.pm> is
 mostly from L<Mojolicious::Plugin::MountPSGI>.
+
+=head1 CONFIGURATION
+
+You can pass the following options when loading the plugin:
+
+=head2 schema
+
+=head2 route
+
+=head2 resource_opts
+
+Here you can set all options that can be used to change the behaviour
+of L<WebAPI::DBIC::RouteMaker>.
 
 =head1 SEE ALSO
 
