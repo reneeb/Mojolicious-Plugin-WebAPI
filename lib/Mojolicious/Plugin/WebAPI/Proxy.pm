@@ -16,9 +16,7 @@ sub handler {
         $self->app(Plack::Util::load_psgi($self->home->rel_file($self->script)));
     }
 
-    my $name      = $c->param('name');
     my $plack_env = $self->_mojo_req_to_psgi_env($c->req);
-
     $plack_env->{'MOJO.CONTROLLER'} = $c;
 
     my $plack_res = $self->app->($plack_env);
@@ -42,6 +40,7 @@ sub _mojo_req_to_psgi_env {
         delete $headers{$key};
         $key =~ s{-}{_};
         $headers{'HTTP_'. uc $key} = $value;
+        $headers{uc $key} = $value;
     }
 
     my $path = $url->path->to_string;
@@ -108,6 +107,12 @@ use warnings;
             $self->[1] += $_[1];
             return 1;
         }
+    }
+
+    sub seek {
+        my $self = shift;
+
+        $self->[1] = $_[0];
     }
 
 1;
