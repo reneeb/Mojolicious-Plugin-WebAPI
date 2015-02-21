@@ -1,6 +1,12 @@
 Release history of Mojolicious::Plugin::WebAPI
 ==============================================
 
+0.02 2015-02-22
+
+  [IMPROVEMENTS]
+  * fix env variables as Plack::Request uses CONTENT_LENGTH
+  * add test for write operation
+
 0.01 2015-02-21
 
   [MISC]
