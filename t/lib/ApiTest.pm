@@ -4,6 +4,7 @@ use Mojo::Base 'Mojolicious';
 
 use ApiTest::Schema;
 use File::Basename;
+use File::Copy;
 
 # This method will run once at server start
 sub startup {
@@ -16,7 +17,10 @@ sub startup {
   my $r = $self->routes;
 
   my $db     = dirname(__FILE__) . '/../test.db';
-  my $schema = ApiTest::Schema->connect('DBI:SQLite:' . $db);
+  my $db_new = dirname(__FILE__) . '/../unittest.' . $$ . '.db';
+  copy $db, $db_new;
+
+  my $schema = ApiTest::Schema->connect('DBI:SQLite:' . $db_new);
 
   # Normal route to controller
   $r->get('/')->to('example#welcome');
@@ -31,10 +35,15 @@ sub startup {
     resource_opts => {
       resource_default_args => {
         http_auth_type => 'none',
+        writable       => 1,
         #base_uri       => $route->to_string,
       },
     },
   });
+}
+
+sub DESTROY {
+  unlink dirname(__FILE__) . '/../unittest.' . $$ . '.db';
 }
 
 1;
