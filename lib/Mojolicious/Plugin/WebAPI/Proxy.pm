@@ -45,6 +45,8 @@ sub _mojo_req_to_psgi_env {
 
     my $path = $url->path->to_string;
     if ( $self->base ) {
+        $path = '/' . $path if index( $path, '/' ) != 0;
+
         my $base = $self->base;
         $path =~ s{ \A $base }{}xms;
     }
