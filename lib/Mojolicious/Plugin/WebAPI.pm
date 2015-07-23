@@ -25,7 +25,7 @@ sub register {
 
     my $psgi_app = WebAPI::DBIC::WebApp->new({
         %opts,
-        schema => $schema,
+        routes => [ map { $schema->source($_) } $schema->sources ],
     })->to_psgi_app;
 
     $route->detour(
