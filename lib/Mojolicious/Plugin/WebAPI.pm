@@ -8,13 +8,19 @@ use WebAPI::DBIC::WebApp;
 use WebAPI::DBIC::RouteMaker;
 use Mojolicious::Plugin::WebAPI::Proxy;
  
-our $VERSION = '0.03';
+our $VERSION = '0.04';
  
 sub register {
     my ($self, $app, $conf) = @_;
 
     my $schema = delete $conf->{schema};
     my $route  = delete $conf->{route};
+    my $debug  = delete $conf->{debug};
+
+    if ( $debug ) {
+        $ENV{WEBAPI_DBIC_DEBUG} = 1;
+        $app->log->debug( "Base route: " . $route->to_string );
+    }
 
     my %opts;
     if ( $conf->{resource_opts} ) {
