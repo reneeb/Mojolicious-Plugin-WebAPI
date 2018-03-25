@@ -2,7 +2,7 @@ package Mojolicious::Plugin::WebAPI::Proxy;
 
 # ABSTRACT: Proxy for WebAPI integration
 
-use Mojo::Base 'Mojo';
+use Mojo::Base 'Mojolicious';
 use Plack::Util;
 
 has 'script';
