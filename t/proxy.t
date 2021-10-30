@@ -26,8 +26,8 @@ use Mojolicious::Plugin::WebAPI::Proxy;
 
    use Mojolicious::Lite;
 
-   my $route  = app->routes->route('/api');
-   my $route2 = app->routes->route('/cpan');
+   my $route  = app->routes->any('/api');
+   my $route2 = app->routes->any('/cpan');
 
    get '/bar' => sub {
       my $c = shift;
@@ -42,8 +42,8 @@ use Mojolicious::Plugin::WebAPI::Proxy;
        base => $route->to_string,
    );
 
-   $route->detour( app => $app );
-   $route2->detour( app => ProxiedApp::app() );
+   $route->partial(1)->to( app => $app );
+   $route2->partial(1)->to( app => ProxiedApp::app() );
 }
 
 my $t = Test::Mojo->new('MiniApp');

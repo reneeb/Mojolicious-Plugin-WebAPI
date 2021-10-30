@@ -11,7 +11,7 @@ sub startup {
   my $self = shift;
 
   # Documentation browser under "/perldoc"
-  $self->plugin('PODRenderer');
+  $self->plugin('PODViewer');
 
   # Router
   my $r = $self->routes;
@@ -28,7 +28,7 @@ sub startup {
   });
 
   my $auth  = $self->routes->under('/'); #->to( 'auth#test' );
-  my $route = $auth->route('/api/v0/');
+  my $route = $auth->any('/api/v0/');
 
   $self->plugin('WebAPI' => {
     schema => $schema,

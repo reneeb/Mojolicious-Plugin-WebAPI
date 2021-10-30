@@ -34,7 +34,7 @@ sub register {
         routes => [ map { $schema->source($_) } $schema->sources ],
     })->to_psgi_app;
 
-    $route->detour(
+    $route->partial(1)->to(
         app => Mojolicious::Plugin::WebAPI::Proxy->new(
             app  => $psgi_app,
             base => $route->to_string,
